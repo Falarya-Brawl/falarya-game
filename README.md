@@ -19,11 +19,11 @@ In order to establish a solid communication flow between the client and the serv
 
 #### Front-end
 - Main Library: ReactJS, Redux;
-- Communication: Axios(asyncronous requests), SocketIO-client(WebSocket);
+- Communication: Axios(asynchronous requests), SocketIO-client(WebSocket);
 
 #### Back-end
 - Main Framework: Express;
-- Communication: Express(asyncronous requests), SocketIO-server(WebSocket), JWT/jose(Security Tokens);
+- Communication: Express(asynchronous requests), SocketIO-server(WebSocket), JWT/jose(Security Tokens);
 - Database: MongoDB(NoSQL Database), Redis(Cache);
 
 ## And Finally... THE GAME!
