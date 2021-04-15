@@ -1,17 +1,34 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
-import './index.css';
-import App from './App';
-import reportWebVitals from './reportWebVitals';
+// -----------------------------
+// File: index.js
+// Author: Paulo Bruno B. Corá
+// Date: 15/04/2021
+// Brief: Falarya app index
+// -----------------------------
 
-ReactDOM.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>,
-  document.getElementById('root')
-);
+// -------------------------
+// Import dependencies;
+const phaser = require("phaser");
 
-// If you want to start measuring performance in your app, pass a function
-// to log results (for example: reportWebVitals(console.log))
-// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
-reportWebVitals();
+// Import scenes;
+
+// -------------------------
+
+// -------------------------
+// Define game configuration;
+const config = {
+  type: phaser.AUTO,
+  antialias: false,
+  parent: "phaser-example",
+  width: 1280,
+  height: 640,
+  autoCenter: phaser.Scale.CENTER_BOTH,
+  physics: {
+    default: "arcade",
+  },
+};
+// -------------------------
+
+// -------------------------
+// Start the app;
+new phaser.Game(config);
+// -------------------------
