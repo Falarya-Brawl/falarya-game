@@ -10,7 +10,7 @@
 const phaser = require("phaser");
 
 // Import assets;
-const background = require("../../assets/img/background.png");
+const background = require("../../assets/img/background.gif");
 const ground = require("../../assets/img/ground.png");
 const playerSprite = require("../../assets/img/player.png");
 const partnerSprite = require("../../assets/img/partner.png");
@@ -30,6 +30,7 @@ class board extends phaser.Scene {
     ];
 
     this.players = [];
+    this.teamHealthPoints = 30;
   }
 
   // -------------------------
@@ -67,6 +68,12 @@ class board extends phaser.Scene {
   // update scene main method;
   update() {
     this.handlePlayerMovement();
+
+    if (this.teamHealthPoints <= 0) {
+      this.socket.emit("game_over");
+      this.socket.disconnect();
+      this.scene.start("GameOver");
+    }
   }
   // -------------------------
 
@@ -83,6 +90,34 @@ class board extends phaser.Scene {
     this.platforms = this.physics.add.staticGroup();
 
     this.platforms.create(400, 720, "ground").setScale(1).refreshBody();
+
+    this.playRect = this.add
+      .rectangle(680, 385, 200, 100, "black", 70)
+      .setInteractive()
+      .on("pointerdown", () => {
+        this.socket.emit("start_horde");
+        this.playButton.destroy();
+        this.playRect.destroy();
+      });
+    this.playButton = this.add
+      .text(640, 360, "Play", {
+        font: "50px Verdana",
+      })
+      .setInteractive()
+      .on("pointerdown", () => {
+        this.socket.emit("start_horde");
+        this.playButton.destroy();
+        this.playRect.destroy();
+      });
+
+    this.teamHealth = this.add.text(
+      30,
+      100,
+      `Health Points: ${this.teamHealthPoints}`,
+      {
+        font: "30px Verdana",
+      }
+    );
   }
   // -------------------------
 
@@ -116,7 +151,9 @@ class board extends phaser.Scene {
       .setCollideWorldBounds(true);
 
     this.physics.add.collider(enemy, this.platforms);
-    this.physics.add.collider(enemy, this.player, () => {});
+    this.physics.add.collider(enemy, this.player, () => {
+      this.socket.emit("damage_taken");
+    });
 
     this.players.map((player) => {
       this.physics.add.collider(enemy, player.player);
@@ -165,6 +202,8 @@ class board extends phaser.Scene {
   }
   // -------------------------
 
+  // -------------------------
+  // Listen to server events method;
   listenToServer() {
     this.socket = io("127.0.0.1:7014", {
       path: "/api/websocket/real-time",
@@ -190,6 +229,19 @@ class board extends phaser.Scene {
 
     this.socket.on("created_enemy", (event) => {
       this.addEnemyToScreen(event.speed);
+    });
+
+    this.socket.on("damage_taken", (event) => {
+      this.teamHealth.destroy();
+      this.teamHealthPoints -= 1;
+      this.teamHealth = this.add.text(
+        30,
+        100,
+        `Health Points: ${this.teamHealthPoints}`,
+        {
+          font: "30px Verdana",
+        }
+      );
     });
 
     setInterval(() => {

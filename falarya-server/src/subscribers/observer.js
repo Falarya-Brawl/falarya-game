@@ -14,12 +14,13 @@ module.exports = class observer {
   listen(webSocketServer) {
     webSocketServer.on("connect", (socket) => {
       console.log("[Websocket Server] Client connected");
+
       socket.broadcast.emit("add_player", { socketid: [socket.id] });
       socket.emit("add_player", { socketid: this.players });
       this.players.push(socket.id);
 
       socket.on("damage_taken", (event) => {
-        socket.broadcast.emit("damage_taken", { damage: 1 });
+        webSocketServer.emit("damage_taken");
       });
 
       socket.on("player_moved", (event) =>
@@ -30,6 +31,15 @@ module.exports = class observer {
         socket.broadcast.emit("replace_player", event)
       );
 
+      socket.on("start_horde", () => {
+        this.isHordeOn = true;
+        EnemyEmitting();
+      });
+
+      socket.on("game_over", () => {
+        this.isHordeOn = false;
+      });
+
       socket.on("disconnect", () => {
         const leaverIndex = this.players.findIndex(
           (item) => item === socket.id
@@ -37,16 +47,21 @@ module.exports = class observer {
 
         this.players.splice(leaverIndex, 1);
         webSocketServer.emit("remove_player", socket.id);
+
+        this.players.length === 0 && (this.isHordeOn = false);
       });
     });
 
-    setInterval(() => {
-      if (this.players.length == 2) {
-        webSocketServer.emit("created_enemy", {
-          speed: Math.floor(Math.random() * 200) + 1,
-        });
-      }
-    }, 10000);
+    const EnemyEmitting = () => {
+      return setInterval(() => {
+        if (this.isHordeOn) {
+          webSocketServer.emit("created_enemy", {
+            speed: Math.floor(Math.random() * 200) + 1,
+          });
+        }
+      }, 5000);
+    };
+
     console.log("[Websocket Server] Listening to events");
   }
 };

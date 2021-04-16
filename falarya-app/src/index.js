@@ -11,6 +11,7 @@ const phaser = require("phaser");
 
 // Import scenes;
 const board = require("./scenes/board/board");
+const gameover = require("./scenes/gameover/gameover");
 // -------------------------
 
 // -------------------------
@@ -24,7 +25,7 @@ const config = {
   physics: {
     default: "arcade",
   },
-  scene: [board],
+  scene: [board, gameover],
 };
 // -------------------------
 
