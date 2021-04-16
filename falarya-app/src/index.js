@@ -10,7 +10,7 @@
 const phaser = require("phaser");
 
 // Import scenes;
-
+const board = require("./scenes/board/board");
 // -------------------------
 
 // -------------------------
@@ -19,12 +19,12 @@ const config = {
   type: phaser.AUTO,
   antialias: false,
   parent: "phaser-example",
-  width: 1280,
-  height: 640,
   autoCenter: phaser.Scale.CENTER_BOTH,
+  scale: { mode: phaser.Scale.FIT },
   physics: {
     default: "arcade",
   },
+  scene: [board],
 };
 // -------------------------
 
