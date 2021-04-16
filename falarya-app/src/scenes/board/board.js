@@ -61,10 +61,11 @@ class board extends phaser.Scene {
 
   // -------------------------
   // Create scene main method;
-  create() {
+  async create() {
     this.listenToServer();
     this.mountSceneScreen();
     this.player = this.addPlayerToScreen();
+    this.enableRTCStreaming();
   }
   // -------------------------
 
@@ -123,6 +124,7 @@ class board extends phaser.Scene {
       );
     });
 
+    // Player replacement backup;
     setInterval(() => {
       this.socket.emit("player_moved", {
         id: this.socket.id,
@@ -131,6 +133,79 @@ class board extends phaser.Scene {
         y: this.player.body.y,
       });
     }, 2000);
+  }
+  // -------------------------
+
+  // -------------------------
+  async enableRTCStreaming() {
+    const mediaStream = await navigator.mediaDevices.getUserMedia({
+      video: false,
+      audio: true,
+    });
+
+    //Stablish WebRTC peer connection;
+    this.localRTC = new RTCPeerConnection({
+      iceServers: [{ urls: "stun:stun.l.google.com:19302" }],
+    });
+
+    mediaStream
+      .getTracks()
+      .forEach((track) => this.localRTC.addTrack(track, mediaStream));
+
+    this.localRTC.onicecandidate = ({ candidate }) => {
+      candidate && this.socket.emit("candidate", this.socket.id, candidate);
+    };
+
+    this.localRTC.ontrack = ({ streams: [mediaStream] }) => {
+      document.querySelector("audio").srcObject = mediaStream;
+    };
+
+    const RTCOffer = await this.localRTC.createOffer();
+    const RTCLocalDescription = await this.localRTC.setLocalDescription(
+      RTCOffer
+    );
+
+    this.socket.emit("offer", this.socket.id, this.localRTC.localDescription);
+    // -------------------------
+
+    // -------------------------
+    this.socket.on("offer", async (id, data) => {
+      this.remoteRTC = new RTCPeerConnection({
+        iceServers: [{ urls: "stun:stun.l.google.com:19302" }],
+      });
+
+      mediaStream
+        .getTracks()
+        .forEach((track) => this.remoteRTC.addTrack(track, mediaStream));
+      this.remoteRTC.onicecandidate = ({ candidate }) => {
+        candidate && this.socket.emit("candidate", id, candidate);
+      };
+      this.remoteRTC.ontrack = ({ streams: [mediaStream] }) => {
+        document.querySelector("audio").srcObject = mediaStream;
+      };
+
+      await this.remoteRTC.setRemoteDescription(data);
+
+      const answer = await this.remoteRTC.createAnswer();
+
+      await this.remoteRTC.setLocalDescription(answer);
+
+      socket.emit("answer", id, this.remoteRTC.localDescription);
+    });
+    // -------------------------
+
+    // -------------------------
+    this.socket.on("answer", (description) => {
+      localConnection.setRemoteDescription(description);
+    });
+    // -------------------------
+
+    // -------------------------
+    this.socket.on("candidate", (candidate) => {
+      const conn = this.localRTC || this.remoteRTC;
+      conn.addIceCandidate(new RTCIceCandidate(candidate));
+    });
+    // -------------------------
   }
   // -------------------------
 

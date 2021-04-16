@@ -33,11 +33,12 @@ module.exports = class observer {
 
       socket.on("start_horde", () => {
         this.isHordeOn = true;
-        EnemyEmitting();
+        this.horde = EnemyEmitting();
       });
 
       socket.on("game_over", () => {
         this.isHordeOn = false;
+        clearInterval(this.horde);
       });
 
       socket.on("disconnect", () => {
@@ -48,7 +49,20 @@ module.exports = class observer {
         this.players.splice(leaverIndex, 1);
         webSocketServer.emit("remove_player", socket.id);
 
-        this.players.length === 0 && (this.isHordeOn = false);
+        this.players.length === 0 &&
+          ((this.isHordeOn = false), clearInterval(this.horde));
+      });
+      socket.on("offer", (id, data) => {
+        console.log(id);
+        socket.to(id).emit("offer", socket.id, data);
+      });
+
+      socket.on("answer", (id, data) => {
+        socket.to(id).emit("answer", data);
+      });
+
+      socket.on("candidate", (id, signal) => {
+        socket.to(id).emit("candidate", signal);
       });
     });
 
