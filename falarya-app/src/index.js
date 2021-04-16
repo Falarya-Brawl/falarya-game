@@ -10,8 +10,7 @@
 const phaser = require("phaser");
 
 // Import scenes;
-const board = require("./scenes/board/board");
-const gameover = require("./scenes/gameover/gameover");
+const { board, gameover } = require("./scenes");
 // -------------------------
 
 // -------------------------

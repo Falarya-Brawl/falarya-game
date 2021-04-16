@@ -9,7 +9,6 @@
 // Import dependencies;
 const express = require("express");
 const io = require("socket.io");
-const bodyParser = require("body-parser");
 const cors = require("cors");
 
 // Import modules;
@@ -24,9 +23,8 @@ class app {
 
   init() {
     // Set server configurations;
-    this.server.use(bodyParser.json());
     this.server.use(cors());
-    this.server.use(bodyParser.urlencoded({ extended: false }));
+    this.server.use(express.static("./build"));
 
     // Initialize http server;
     const HttpServer = this.server.listen(7014);

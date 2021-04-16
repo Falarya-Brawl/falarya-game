@@ -2,7 +2,6 @@
 
 Falarya Brawl main game application.
 
-
 ## The Project
 
 This project was born with the proposition of being a practical and solid way to practice all the content learned on the _Computer Network Administration_ course, wich has for its objective to bring a comprehension of subjects such as programming languages and algorithms; computer network technologies and protocols; general knowledge about computer functionalities.
@@ -18,13 +17,14 @@ The project code structure runs in using a single programming language on both f
 In order to establish a solid communication flow between the client and the server, the application is structured with a collection of restful API endpoints for the general game data and content, and a Web Socket communication for the game session data.
 
 #### Front-end
-- Main Library: ReactJS, Redux;
-- Communication: Axios(asynchronous requests), SocketIO-client(WebSocket);
+
+- Main Framework: Phaser3;
+- Communication: SocketIO-client(WebSocket);
 
 #### Back-end
+
 - Main Framework: Express;
-- Communication: Express(asynchronous requests), SocketIO-server(WebSocket), JWT/jose(Security Tokens);
-- Database: MongoDB(NoSQL Database), Redis(Cache);
+- Communication: Express(asynchronous requests), SocketIO-server(WebSocket);
 
 ## And Finally... THE GAME!
 
@@ -36,4 +36,3 @@ Inspirations:
 Realm of the mad god: https://store.steampowered.com/app/200210/Realm_of_the_Mad_God_Exalt/;
 Dungeon Rampage: https://www.onrpg.com/games/dungeon-rampage/;
 The Binding of Isaac: https://store.steampowered.com/app/113200/The_Binding_of_Isaac/;
-

@@ -8,6 +8,7 @@
 // -------------------------
 // Import dependencies;
 const phaser = require("phaser");
+const io = require("socket.io-client");
 
 // Import assets;
 const background = require("../../assets/img/background.gif");
@@ -15,7 +16,8 @@ const ground = require("../../assets/img/ground.png");
 const playerSprite = require("../../assets/img/player.png");
 const partnerSprite = require("../../assets/img/partner.png");
 const enemySprite = require("../../assets/img/skeleton.png");
-const io = require("socket.io-client");
+const mainMusicTrack = require("../../assets/audio/main.wav");
+
 // -------------------------
 
 // -------------------------
@@ -37,6 +39,8 @@ class board extends phaser.Scene {
   // Preload scene resources method;
   preload() {
     this.layers.forEach((layer) => this.load.image(layer.tag, layer.src));
+
+    this.load.audio("backgroundMusic", mainMusicTrack);
 
     this.load.spritesheet("player", playerSprite, {
       frameWidth: 24,
@@ -78,8 +82,68 @@ class board extends phaser.Scene {
   // -------------------------
 
   // -------------------------
+  // Listen to server events method;
+  listenToServer() {
+    this.socket = io("127.0.0.1:7014", {
+      path: "/api/websocket/real-time",
+    });
+
+    this.socket.on("connection", (event) => {
+      socket.emit("add_player");
+    });
+
+    this.socket.on("add_player", (event) => {
+      event.socketid.map((id) => {
+        this.addPlayerToScreen(id);
+      });
+    });
+
+    this.socket.on("remove_player", (event) => {
+      this.removePlayerFromScreen(event);
+    });
+
+    this.socket.on("player_moved", (event) => {
+      this.handleMultiplayerMovement(event);
+    });
+
+    this.socket.on("created_enemy", (event) => {
+      this.addEnemyToScreen(event.speed);
+    });
+
+    this.socket.on("damage_taken", (event) => {
+      this.teamHealth.destroy();
+      this.teamHealthPoints -= 1;
+      this.teamHealth = this.add.text(
+        30,
+        100,
+        `Health Points: ${this.teamHealthPoints}`,
+        {
+          font: "30px Verdana",
+        }
+      );
+    });
+
+    setInterval(() => {
+      this.socket.emit("player_moved", {
+        id: this.socket.id,
+        move: "player_replaced",
+        x: this.player.body.x,
+        y: this.player.body.y,
+      });
+    }, 2000);
+  }
+  // -------------------------
+
+  // -------------------------
   // Mount screen configs method;
   mountSceneScreen() {
+    this.sound
+      .add("backgroundMusic", {
+        volume: 0.2,
+        loop: true,
+      })
+      .play();
+
     // Define screen layers;
     this.layers.forEach((layer) => {
       layer.type === "background" &&
@@ -91,6 +155,7 @@ class board extends phaser.Scene {
 
     this.platforms.create(400, 720, "ground").setScale(1).refreshBody();
 
+    // Add play button;
     this.playRect = this.add
       .rectangle(680, 385, 200, 100, "black", 70)
       .setInteractive()
@@ -110,6 +175,7 @@ class board extends phaser.Scene {
         this.playRect.destroy();
       });
 
+    // add tem health points;
     this.teamHealth = this.add.text(
       30,
       100,
@@ -118,6 +184,26 @@ class board extends phaser.Scene {
         font: "30px Verdana",
       }
     );
+
+    //add fullscreen button;
+    this.add
+      .rectangle(0, 0, 160, 50, "black", 70)
+      .setInteractive()
+      .on("pointerdown", () => {
+        !this.scale.isFullscreen
+          ? this.scale.startFullscreen()
+          : this.scale.stopFullscreen();
+      });
+    this.add
+      .text(0, 0, "Fullscreen", {
+        font: "12pt Arial",
+      })
+      .setInteractive()
+      .on("pointerdown", () => {
+        !this.scale.isFullscreen
+          ? this.scale.startFullscreen()
+          : this.scale.stopFullscreen();
+      });
   }
   // -------------------------
 
@@ -203,58 +289,7 @@ class board extends phaser.Scene {
   // -------------------------
 
   // -------------------------
-  // Listen to server events method;
-  listenToServer() {
-    this.socket = io("127.0.0.1:7014", {
-      path: "/api/websocket/real-time",
-    });
-
-    this.socket.on("connection", (event) => {
-      socket.emit("add_player");
-    });
-
-    this.socket.on("add_player", (event) => {
-      event.socketid.map((id) => {
-        this.addPlayerToScreen(id);
-      });
-    });
-
-    this.socket.on("remove_player", (event) => {
-      this.removePlayerFromScreen(event);
-    });
-
-    this.socket.on("player_moved", (event) => {
-      this.handleMultiplayerMovement(event);
-    });
-
-    this.socket.on("created_enemy", (event) => {
-      this.addEnemyToScreen(event.speed);
-    });
-
-    this.socket.on("damage_taken", (event) => {
-      this.teamHealth.destroy();
-      this.teamHealthPoints -= 1;
-      this.teamHealth = this.add.text(
-        30,
-        100,
-        `Health Points: ${this.teamHealthPoints}`,
-        {
-          font: "30px Verdana",
-        }
-      );
-    });
-
-    setInterval(() => {
-      this.socket.emit("player_moved", {
-        id: this.socket.id,
-        move: "player_replaced",
-        x: this.player.body.x,
-        y: this.player.body.y,
-      });
-    }, 2000);
-  }
-
-  // -------------------------
+  // Remove player from screen method;
   removePlayerFromScreen(id) {
     const leaverIndex = this.players.findIndex((item) => item.id === id);
     this.players[leaverIndex].player.destroy();
@@ -262,6 +297,8 @@ class board extends phaser.Scene {
   }
   // -------------------------
 
+  // -------------------------
+  // Handle other players movement method;
   handleMultiplayerMovement(event) {
     const movedPlayerIndex = this.players.findIndex(
       (item) => item.id === event.id
@@ -285,6 +322,7 @@ class board extends phaser.Scene {
         break;
     }
   }
+  // -------------------------
 }
 // -------------------------
 // -------------------------
