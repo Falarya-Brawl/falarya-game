@@ -85,7 +85,7 @@ class board extends phaser.Scene {
   // -------------------------
   // Listen to server events method;
   listenToServer() {
-    this.socket = io(`${window.location.hostname}:7014`, {
+    this.socket = io("https://falarya.boidacarapreta.cc/", {
       path: "/api/websocket/real-time",
     });
 
