@@ -24,13 +24,15 @@ In order to establish a solid communication flow between the client and the serv
 #### Back-end
 
 - Main Framework: Express;
-- Communication: Express(asynchronous requests), SocketIO-server(WebSocket);
+- Communication: Express(HTTP Server), SocketIO-server(WebSocket);
 
 ## And Finally... THE GAME!
 
-The game proposal is to be a simple but yet fun dynamic fantasy RPG, in which the player can experience a grinding process while exploring new dungeons, kill new monsters, and cooperate with or kill other players. Playing with different characters with different skill-sets, and gameplay styles.
+The game proposal is to be a simple but yet fun dynamic fantasy RPG, in which the player can experience a grinding process while exploring new dungeons, facing new monsters, and cooperating with other players. The game allow you to play with different characters with different skill-sets, and gameplay styles.
 
-It will be experienced on a 3D ambient, in key-based combat gameplay with programmed bot enemies.
+It will be experienced on a 2D ambient, in key-based gameplay with programmed bot enemies.
+
+A Demo version can be played at: https://falarya.boidacarapreta.cc/
 
 Inspirations:
 Realm of the mad god: https://store.steampowered.com/app/200210/Realm_of_the_Mad_God_Exalt/;
