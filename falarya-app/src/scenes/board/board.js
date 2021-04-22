@@ -279,6 +279,43 @@ class board extends phaser.Scene {
           ? this.scale.startFullscreen()
           : this.scale.stopFullscreen();
       });
+
+      console.log(window.innerWidth)
+      if (window.innerWidth < 1000){
+        this.mobileBtnUp = this.add
+        .rectangle(100, 500, 50, 50, "black", 70)
+        .setInteractive()
+        .on("pointerdown", () => {
+          this.player.body.touching.down && this.player.setVelocityY(2000);
+          this.socket.emit("player_moved", {
+            id: this.socket.id,
+            move: "player_jumped",
+          });
+        });
+        
+        this.mobileBtnRight = this.add
+        .rectangle(150, 550, 50, 50, "black", 70)
+        .setInteractive()
+        .on("pointerdown", () => {
+          this.player.setVelocityX(200);
+          this.socket.emit("player_moved", {
+            id: this.socket.id,
+            move: "player_moved_right",
+          });
+        });
+
+        this.mobileBtnLeft = this.add
+        .rectangle(50, 550, 50, 50, "black", 70)
+        .setInteractive()
+        .on("pointerdown", () => {
+          this.player.setVelocityX(-200);
+            this.socket.emit("player_moved", {
+              id: this.socket.id,
+              move: "player_moved_left",
+            });
+        });
+      }
+    
   }
   // -------------------------
 
