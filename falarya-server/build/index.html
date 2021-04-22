@@ -7,6 +7,7 @@
 
     <meta name="author" content="Paulo Bruno B. Corá"/>
     <link rel="icon" href="./favicon.ico" />
+    <!-- <link rel="manifest" href="manifest.json"> -->
 
     <style>
        body {
@@ -14,6 +15,11 @@
         }
     </style>
 
-  </head>
+  <meta name="theme-color" content="#000" /><link rel="manifest" href="manifest.a55066b4ff2a6ec9d5124b7b56b3e412.json" /></head>
   <body><script type="text/javascript" src="bundle.min.js"></script></body>
+  <script>
+      if ("serviceWorker" in navigator) {
+        navigator.serviceWorker.register("service-worker.js");
+      }
+  </script>
 </html>

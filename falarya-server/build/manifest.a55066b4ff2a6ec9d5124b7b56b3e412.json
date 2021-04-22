@@ -1,0 +1,38 @@
+{
+  "icons": [
+    {
+      "src": "icon_14x14.1ed8f24f0c92b1a5c0997f51bee6e513.png",
+      "sizes": "14x14",
+      "type": "image/png"
+    },
+    {
+      "src": "icon_24x24.ea2b32356a7cea0ab5040a8fd289056b.png",
+      "sizes": "24x24",
+      "type": "image/png"
+    },
+    {
+      "src": "icon_24x24.ae2ec96d7ff7a675066b22521df930c2.png",
+      "sizes": "24x24",
+      "type": "image/png"
+    },
+    {
+      "src": "icon_1280x1280.c15eae887f763115f22c643f98ff0e4f.png",
+      "sizes": "1280x1280",
+      "type": "image/png"
+    },
+    {
+      "src": "icon_1305x1305.66cdfc2d4d10b9bf54a415bbfa038f16.gif",
+      "sizes": "1305x1305",
+      "type": "image/gif"
+    }
+  ],
+  "name": "Falarya Brawl",
+  "short_name": "Falarya Brawl",
+  "orientation": "portrait",
+  "display": "standalone",
+  "start_url": "index.html",
+  "shortname": "falarya-brawl",
+  "scope": "./",
+  "theme_color": "#000",
+  "background_color": "#000"
+}
