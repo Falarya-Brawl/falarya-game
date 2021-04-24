@@ -4,9 +4,9 @@ Falarya Brawl main game application.
 
 ## The Project
 
-This project was born with the proposition of being a practical and solid way to practice all the content learned on the _Computer Network Administration_ course, wich has for its objective to bring a comprehension of subjects such as programming languages and algorithms; computer network technologies and protocols; general knowledge about computer functionalities.
+This project was born with the proposition of being a practical and solid way to practice computer network administration concepts, wich has for its objective to bring a comprehension of subjects such as programming languages and algorithms; computer network technologies and protocols; general knowledge about computer functionalities.
 
-The central idea of the project is built around the development of a game web application using programming techniques and communication technologies.
+The central idea of the project is built around the development of a game web application using programming techniques and communication technologies,then hosting it on a infrastructure provider of the cloud using a web-server.
 
 ## Technologies
 
